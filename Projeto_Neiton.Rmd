@@ -1,0 +1,694 @@
+
+---
+title: "UFRPE - Universidade Federal Rural de Pernambuco"
+author: "Disciplina: Computação para Análise de Dados<br>Profº Ermeson Andrade<br>Discente: Neiton Carvalho da Silva"
+date: "Data: 31/07/2020"
+output: html_document
+---
+
+# Acidentes de trânsito com e sem vítimas em Recife no ano 2019 {.tabset}
+
+Esta é uma atividade referente ao desenvolvimento de relatórios dinâmicos por meio do R Markdown para fazer uma análise dos dados referente a acidentes de trânsito com e sem vítimas em Recife no ano 2019, com objetivo de buscar alguma informação que possa agregar valor para sugerir alguma ação preventiva para evitar acidentes, logo salvando vidas de forma preventiva.
+
+Fonte do Dataset: [Prefeitura do Recife: Acidentes de Trânsito com e sem vitimas 2019](http://dados.recife.pe.gov.br/dataset/acidentes-de-transito-com-e-sem-vitimas)
+
+
+## 1. Introdução
+
+### 1.1 Declaração do Problema
+
+Salvar vidas de forma preventiva é a melhor opção no transito e a única forma de poder prevenir é realizando uma análise dos dados, neste projeto será apresentado um estudo data science detalhado referente aos acidentes de transito com e sem vítimas na população de Recife no período do ano de 2019. Estes dados foram gerados pela Empresa Municipal de Informática – EMPREL por meio de um dataset que é um conjunto de dados, está disponível no seguinte link:
+[Dataset transito 2019](http://dados.recife.pe.gov.br/dataset/acidentes-de-transito-com-e-sem-vitimas)
+
+### 1.2 Metodologia Desenvolvida
+
+A metodologia será por meio do processo com base nas evidências dos dados, seguindo as seguintes etapas:
+
+
+![](C:\projeto_ufrpe\Processo_Salvar_vidas.png)
+
+***Entrada***<br>
+Vai seguir as seguintes etapas antes de começar o processo:
+Baixar o dataset relacionado ao transito com e sem vítimas em Recife no ano 2019; [clique aqui para verificar](http://dados.recife.pe.gov.br/dataset/acidentes-de-transito-com-e-sem-vitimas)<br>
+Fazer a limpeza dos dados, que é a padronização para poder começar a fazer a análise dos dados;<br>
+<br>
+***Processo***<br>
+Aplicar técnicas de data science para encontrar alguma informação que possa agregar valor e que seja representativa da problemática, para poder gerar alguma informação que viabilize de forma representativa e convergendo a uma provável ação preventiva baseada nos dados do dataset.<br>
+
+***Saída***<br>
+Gerar gráficos e informações que possam agregar uma provável solução para evitar que aconteça mais algum acidente por meio de uma ação preventiva sugerida pelo autor baseada na análise dos dados.<br><br><br><br><br><br>
+
+## 2. Pacotes Requeridos
+
+### 2.1 Todos os Pacotes
+
+Cada pacote tem uma breve explicação, o comando necessário para realizar a instalação e por fim o modo para carregar no projeto:<br>
+
+Caro leitor, o simbolo # antes de install.packages, é porque já está instalado no computador do autor, caso no seu computador ainda não tenha instalado é só retirar o simbolo #.<br>
+
+Caso já esteja instalado em seu computador precisa carregar os pacotes para que o sistema possa funcionar, pois são pré-requisitos para o funcionamento.<br>
+
+
+```{r pacotes, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+
+#Explicação do pacote readr: O objetivo do 'readr' é fornecer uma maneira rápida e amigável de ler dados retangulares (como 'csv', 'tsv' e 'fwf'). Ele foi projetado para analisar de maneira flexível muitos tipos de dados encontrados na natureza, enquanto ainda falha com facilidade quando os dados são alterados inesperadamente.
+#install.packages("readr")
+library(readr)
+
+#Explicação do pacote stringr: Um conjunto de invólucros consistente, simples e fácil de usar em torno do fantástico pacote 'stringi'. Todos os nomes de funções e argumentos (e posições) são consistentes, todas as funções lidam com "NA" e vetores de comprimento zero da mesma maneira, e a saída de uma função é fácil de alimentar na entrada de outra.
+#install.packages("stringr")
+library(stringr)
+
+#Explicação do pacote dplyr: É uma forma rápida e consistente para trabalhar na manipulação de dados, fornecendo um conjunto consistente de funções como verbos para facilitar, que ajudam a resolver os desafios mais comuns de manipulação de dados, são eles:
+# * mutate() adiciona novas variáveis ​​que são funções de variáveis ​​existentes
+# * select() escolhe variáveis ​​com base em seus nomes.
+# * filter() seleciona casos com base em seus valores.
+# * summarise() reduz vários valores para um único resumo.
+# * arrange() altera a ordem das linhas.
+#install.packages("dplyr")
+library(dplyr)
+
+#Explicação do pacote tidyr: O pacote tidyr foi projetado especificamente para arrumar dados e funciona bem com pipelines de dados 'dplyr', que tem as seguintes funções:
+# * unite() Transforma várias colunas em uma só usando um operador
+# * separate()é usado para separar duas variáveis que estão em uma mesma coluna.
+# * gather() Cada coluna deve ser uma única variável e cada linha deve ser uma única observação.
+# * spread() Essa função é essencialmente o inverso da gather(). Ela espalha uma variável nas colunas.
+#install.packages("tidyr")
+library(tidyr)
+
+#Explicação do pacote tidyverse: O 'tidyverse' é um conjunto de pacotes que funcionam em harmonia porque compartilham representações de dados comuns e design de 'API'. Este pacote foi projetado para facilitar a instalação e o carregamento de vários pacotes 'tidyverse' em uma única etapa. 
+#install.packages("tidyverse")
+library(tidyverse)
+
+#Explicação do pacote ggplot2: Um pacote para criar gráficos. Você fornece os dados, diz ao 'ggplot2' como mapear variáveis ​​e gera os gráficos.
+#install.packages("ggplot2")
+library(ggplot2)
+
+#Explicação do pacote lattice: Um poderoso e elegante sistema de visualização de dados de alto nível inspirado nos gráficos da Trellis, com ênfase em dados multivariados. A estrutura é suficiente para as necessidades gráficas típicas e também é flexível o suficiente para lidar com a maioria dos requisitos não padrão. 
+#install.packages("lattice")
+library(lattice)
+
+#Explicação do pacote tm: Este pacote é um framework para aplicativos de mineração de texto em R.
+#install.packages("tm")
+library(tm)
+
+#Explicação do pacote tm.lexicon.GeneralInquirer: É um complemento da função tm, caso o sistema der algum problema.
+#install.packages("tm.lexicon.GeneralInquirer", repos="http://datacube.wu.ac.at", type="source")
+library(tm.lexicon.GeneralInquirer)
+
+#Explicação do pacote wordcloud: Plotar uma nuvem de palavras
+#install.packages("wordcloud")
+library(wordcloud)
+
+#Explicação do pacote SnowballC: Uma interface R para a biblioteca C 'libstemmer' que implementa o algoritmo de derivação de palavras de Porter para recolher palavras em uma raiz comum para ajudar na comparação de vocabulário. Os idiomas atualmente suportados são dinamarquês, holandês, inglês, finlandês, francês, alemão, húngaro, italiano, norueguês, português, romeno, russo, espanhol, sueco e turco.
+#install.packages("SnowballC")
+library(SnowballC)
+
+#Explicação do pacote RColorBrewer: Cria paletas de cores bonitas, especialmente para mapas temáticos
+#install.packages("RColorBrewer")
+library(RColorBrewer)
+
+#Explicação do pacote syuzhet: Extrai sentimentos e arcos de plotagem derivados de sentimentos do texto usando três dicionários de sentimentos convenientemente empacotados para consumo pelos usuários R. O pacote também fornece um método para implementar o analisador de sentimentos coreNLP de Stanford. 
+#install.packages("syuzhet")
+library(syuzhet)
+
+#Explicação do pacote splitstackshape: Este pacote serve para realizar uma amostragem estratificada
+#install.packages("splitstackshape")
+library(splitstackshape)
+
+#Explicação do pacote stringr: Este pacote é para tratamento de texto que no caso string em programação.
+#install.packages("stringr")
+library(stringr)
+
+#Explicação do pacote data.table: Serve para a manipulação de tabelas
+#data.table::update.dev.pkg() # <---( Se houver problema no data.table pode utilizar esta linha.
+#install.packages("data.table")
+library(data.table)
+
+
+#Explicação do pacote anytime: Converta a entrada em qualquer caractere, número inteiro, numérico, fator ou tipo ordenado em objetos 'POSIXct' (ou 'Data'), usando um dos vários formatos predefinidos e confiando nos recursos do Boost para análise de data e hora.
+#install.packages("anytime")
+library(anytime)
+
+#Explicação do pacote viridis: Este pacote serve para seleção de paleta de cores utilizada nos gráficos
+#install.packages("viridis")
+library(viridis)	
+
+```
+
+## 3. Preparação dos Dados
+
+### 3.1 Importando o dataset diretamento do site da prefeitura do Recife
+Neste item 3.1 foi necessário apresentar o data frame original de mais simples.<br>
+
+```{r impotacao_dataset, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+
+#Criação da variável fileURL que recebe o endereço do Link do dataset
+fileURL <- "http://dados.recife.pe.gov.br/dataset/44087d2d-73b5-4ab3-9bd8-78da7436eed1/resource/3531bafe-d47d-415e-b154-a881081ac76c/download/acidentes-2019.csv"
+
+#Comando para realizar o download do arquivo e já direcionando o lugar que será salvo
+download.file(fileURL, destfile =
+                "C:\\projeto_ufrpe\\acidentes_2019.csv", method = "curl")
+
+#Limpando a variável fileURL memória depois que não está sendo necessária
+rm(fileURL)
+
+#Verificando se o arquivo foi salvo no lugar correto
+list.files("C:\\projeto_ufrpe\\")
+
+#Apontar corretamente o caminho antes de começar à análise dos dados
+setwd("C:/projeto_ufrpe")
+
+#Criando o Dataset original batisado de df_transito após a importação
+df_transito <- read.csv(file = "acidentes_2019.csv",
+                        header = TRUE,#Primeira linha consiste no nome das colunas
+                        strip.white = TRUE,#Remove espaços em branco antes e depois dos dados
+                        na.strings = "",#Substitui as céluas vázias por NA
+                        sep = ";")#Separador por ponto e virgula
+
+#Para mostrar que o dataset já está importado corretamente, vou mostrar com alguns campos com as suas 06 primeiras linhas:
+
+head(# head é o comando para retornar as 06 primeiras linhas
+  select(# select é o comando para selecionar as colunas associada a um data frame
+    df_transito, # Data frame
+            DATA,# Campo que no R é uma variável
+            hora,# Campo que no R é uma variável
+            situacao,# Campo que no R é uma variável
+            bairro,# Campo que no R é uma variável
+            tempo_clima,# Campo que no R é uma variável
+            situacao_semaforo))# Campo que no R é uma variável
+
+```
+
+O dataset df_transito orinal tem:
+```{r dimensão, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#Dimensão do data frame
+dim(df_transito)
+```
+12062 - observações que quer dizer linhas<br>
+41 - variáveis que pode ser chamada de campos ou colunas da tabela.<br>
+
+```{r chave, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#Adicionado uma chave primária ao dataset
+id <- rownames(df_transito)
+id <- as.numeric(id)
+df_transito <- cbind(id=id, df_transito)
+rm(id)
+```
+
+### 3.2. - Explicação de todos os campos originais conforme a importação.
+
+Neste item criei um data frame chamado de df_campo para poder explicar cada campo o df_transito, onde tem um total de 41 variáveis e 12062 obs.<br>
+
+Nota: Cada variável é uma coluna na tabela e cada obs é uma linha na tabela.<br>
+
+```{r explicacao_campos, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#Professor, estes comando funcionam na parte do Script, mas no R Markdown não conseguir fazer rodar.
+
+#impotação da explicaçõa de todas as variaveis diretamente dropbox compartilhado.
+tabela_campos <- read.csv(file = "https://www.dropbox.com/s/73j4vbvlfd6uw5y/tabela_campos.csv?dl=1", header = T, strip.white = T, na.strings = "", sep = ";", stringsAsFactors=FALSE, quote="" )
+
+
+tabela_campos <- read.csv(file = "https://www.dropbox.com/s/73j4vbvlfd6uw5y/tabela_campos.csv?dl=1", 
+                          header = T, 
+                          strip.white = T, 
+                          na.strings = "", 
+                          sep = ";", 
+                          stringsAsFactors=FALSE, 
+                          quote="")
+
+#Explicação de todas as variáveis que são os campos, informando o seu tipo e também uma explicação técnica de cada campo
+View(tabela_campos)
+
+
+#Como não está funcionando o R Markdonw, tive que implementar desta forma, para conseguir explicar finalmente
+Campo <- c(
+  "DATA",
+  "hora",
+  "natureza_acidente",
+  "situacao",
+  "bairro",
+  "endereco",
+  "numero",
+  "detalhe_endereco_acidente",
+  "complemento",
+  "endereco_cruzamento",
+  "numero_cruzamento",
+  "referencia_cruzamento",
+  "bairro_cruzamento",
+  "num_semaforo",
+  "sentido_via",
+  "tipo",
+  "descricao",
+  "auto",
+  "moto",
+  "ciclom",
+  "ciclista",
+  "pedestre",
+  "onibus",
+  "caminhao",
+  "viatura",
+  "outros",
+  "vitimas",
+  "vitimasfatais",
+  "acidente_verificado",
+  "tempo_clima",
+  "situacao_semaforo",
+  "sinalizacao",
+  "condicao_via",
+  "conservacao_via",
+  "ponto_controle",
+  "situacao_placa",
+  "velocidade_max_via",
+  "mao_direcao",
+  "divisao_via1",
+  "divisao_via2",
+  "divisao_via3"
+)
+
+Tipo <- c(
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "int-Número",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "int-Número",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter",
+  "chr-Caracter"
+)
+
+Descricao <- c(
+  "Data que aconteceu o acidente de trânsito",
+  "Hora que foi registrado o acidente de trânsito",
+  "Diz se o acidente teve vítima, ou não teve vítima, se foi com vítima fatal, se foi na entrada ou na saída e também verifica se teve apoio",
+  "Diz se o acidente foi finalizado, cancelado, se é uma duplicidade, se esta pendente, se teve uma equipe em deslocamento, se teve uma equipe local ou se estar em aberto",
+  "Informa o nome dos bairros que aconteceu o acidente",
+  "Informa o nome das ruas ou avenidas que aconteceu o acidente",
+  "Informa o número do local da rua ou avenida que aconteceu o acidente",
+  "É o detalhamento do endereço do acidente, informando também a rua ou avenida.",
+  "É uma variável para facilita a localização do endereço",
+  "Informa o endereço do cruzamento entre as ruas ou avenidas",
+  "Informa o número do cruzamento entre as ruas ou avenidas",
+  "Informa um complemento do endereço e também ponto de referência de onde aconteceu o acidente",
+  "nome dos bairro que aconteceu os acidentes referente a cruzamento",
+  "Informa o código do semáforo mais próximo que teve o acidente",
+  "Informa o destino principal seguindo da via que teve o acidente",
+  "Informa o tipo de colisão",
+  "Informa os principais envolvidos no acidente",
+  "Informa o total de automóvel envolvido no acidente",
+  "Informa o total de moto envolvido no acidente",
+  "Informa o total de ciclo motor (exemplo de mobilete, ciquentinhas, bicicleta motorizada) envolvido no acidente",
+  "Informa o total de ciclistas envolvidos no acidente",
+  "Informa o total de pedestre envolvidos no acidente",
+  "Informa o total de ônibus envolvidos no acidente",
+  "Informa o total de caminhões envolvidos no acidente",
+  "Informa o total de viatura públicas envolvidos no acidente",
+  "Informa o total de veículo não registrados envolvidos no acidente, como exemplo:  carroça.",
+  "Informa o total de vítimas não fatais envolvidas no acidente",
+  "Informa o total de vítimas fatais envolvidas no acidente",
+  "Nome do local específico do acidente",
+  "Diz o estado do tempo",
+  "Diz o estado em que o semáforo existente está e quando não existe semáforo informa também",
+  "Estado em que se encontra a sinalização local",
+  "Estado condicional da via no momento do acidente",
+  "Informa o estado de conservação em que a via se encontra no momento do acidente",
+  "Informa se tem algo que possa sinalizar alguma segurança",
+  "Informa o Código da placa de sinalização quando tem, caso não tenha informa não existe",
+  "Informa a velocidade máxima da via",
+  "Informa o tipo de mão da via como exemplo mão única, mão dupla.",
+  "Informa o tipo da faixa que existe na 1º via",
+  "Informa o tipo da faixa que existe na 2º via",
+  "Informa o tipo da faixa que existe na 3º via"
+)
+
+
+df_campo <- data.frame("Campo" = Campo, "Tipo" = Tipo,
+                       "Descricao" = Descricao,
+                       stringsAsFactors = FALSE) 
+
+View(df_campo)
+
+# Como não consegui rodar no R Markdown, criei esta imagem a seguir para poder explicar cada campo (variável).
+```
+<center>**Explicação de cada coluna (campo ou variável) da tabela original**<br>
+
+![](C:\mestrado_UFRPE_Informatica_Aplicada_Neiton\Computacao_para_Analise_de_Dados\Atividades\Projeto Neiton\imagens\Planilha_tabela_campos.png)
+</center>
+
+### 3.3 Limpeza dos dados e explicação
+
+<br><center>***Limpeza dos caracteres especiais de todas as variáveis categoricas que necessitam passar pelo processo***<br></center>
+
+```{r identificacao_limpeza, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+
+#Utilizando o comando str_replace_all para substitui
+
+#Verificação antes a existência de caracteres especiais
+unique(df_transito$natureza_acidente)
+unique(df_transito$tipo)
+head(unique(df_transito$descricao))
+unique(df_transito$acidente_verificado)
+unique(df_transito$situacao_semaforo)
+unique(df_transito$sinalizacao)
+unique(df_transito$ponto_controle)
+head(unique(df_transito$situacao_placa))
+unique(df_transito$mao_direcao)
+unique(df_transito$divisao_via1)
+unique(df_transito$divisao_via2)
+head(unique(df_transito$bairro))
+```
+<br><center>***Processo de limpeza de todas as variáveis por meio do comando str_replace_all que é <br>utilizado para mudar os caractesres especiais por letras.***
+</center>
+```{r Processo_limpeza, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+library(stringr)
+
+#Tratamento da substituição dos caractesres especiais o letras corretas de todos os campos que necessitam
+df_transito$natureza_acidente <- str_replace_all(df_transito$natureza_acidente, "Ã\u008d", "Í")
+df_transito$tipo <- str_replace_all(df_transito$tipo, "Ã\u008d", "Í")
+df_transito$tipo <- str_replace_all(df_transito$tipo, "ÃƒO", "ÃO")
+
+df_transito$descricao <- str_replace_all(df_transito$descricao, "Ã\u008d", "Í")
+df_transito$descricao <- str_replace_all(df_transito$descricao, "Ã‡ÃƒO", "ÇÃO")
+df_transito$descricao <- str_replace_all(df_transito$descricao, "ÃƒO", "ÃO")
+df_transito$descricao <- str_replace_all(df_transito$descricao, "Ã”NIBUS", "ÔNIBUS")
+df_transito$descricao <- str_replace_all(df_transito$descricao, "NÃ£o", "NÃO")
+
+
+df_transito$acidente_verificado <- str_replace_all(df_transito$acidente_verificado, "NÃ£o", "NÃO")
+
+df_transito$situacao_semaforo <- str_replace_all(df_transito$situacao_semaforo, "NÃ£o", "NÃO")
+
+df_transito$sinalizacao <- str_replace_all(df_transito$sinalizacao, "NÃ£o", "NÃO")
+df_transito$sinalizacao <- str_replace_all(df_transito$sinalizacao, "IlegÃ­vel", "Inlegível")
+
+df_transito$ponto_controle <- str_replace_all(df_transito$ponto_controle, "ÃƒO", "ÃO")
+df_transito$ponto_controle <- str_replace_all(df_transito$ponto_controle, "NÃ£o", "NÃO")
+df_transito$ponto_controle <- str_replace_all(df_transito$ponto_controle, "retenÃ§Ã£o", "retenção")
+
+df_transito$situacao_placa <- str_replace_all(df_transito$situacao_placa, "ÃƒO", "ÃO")
+df_transito$situacao_placa <- str_replace_all(df_transito$situacao_placa, "NÃ£o", "NÃO")
+df_transito$situacao_placa <- str_replace_all(df_transito$situacao_placa, "hÃ¡", "há")
+df_transito$situacao_placa <- str_replace_all(df_transito$situacao_placa, "Placas DÃª a preferÃªncia", "Placas da preferência")
+
+df_transito$mao_direcao <- str_replace_all(df_transito$mao_direcao, "Ãšnica", "Única")
+
+df_transito$divisao_via1 <- str_replace_all(df_transito$divisao_via1, "NÃ£o", "NÃO")
+df_transito$divisao_via1 <- str_replace_all(df_transito$divisao_via1, "contÃ­nua", "contínua")
+
+df_transito$divisao_via2 <- str_replace_all(df_transito$divisao_via2, "NÃ£o", "NÃO")
+df_transito$divisao_via2 <- str_replace_all(df_transito$divisao_via2, "contÃ­nua", "contínua")
+
+df_transito$bairro <- str_replace_all(df_transito$bairro, "JOSÃ‰", "JOSÉ")
+df_transito$bairro <- str_replace_all(df_transito$bairro, "Ã\u0081", "Á")
+
+df_transito$bairro <- str_replace_all(df_transito$bairro, "Ã‡", "Ç")
+df_transito$bairro <- str_replace_all(df_transito$bairro, "Ãƒ", "Ã")
+df_transito$bairro <- str_replace_all(df_transito$bairro, "Ã“", "Ó")
+df_transito$bairro <- str_replace_all(df_transito$bairro, "Ã•", "Õ")
+df_transito$bairro <- str_replace_all(df_transito$bairro, "Ã‡Ãƒ", "ÇÃ")
+df_transito$bairro <- str_replace_all(df_transito$bairro, "Ã\u008d", "Í")
+df_transito$bairro <- str_replace_all(df_transito$bairro, "Ã”", "Ô")
+
+
+```
+### 3.4 Dados Limpos
+
+<center>***Realizar a verificação após limpeza de todos os textos nas variáveis***</center><br>
+
+```{r Verificacao_depois_da_limpeza, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#Verificação Depois
+unique(df_transito$natureza_acidente)
+unique(df_transito$tipo)
+head(unique(df_transito$descricao))
+unique(df_transito$acidente_verificado)
+unique(df_transito$situacao_semaforo)
+unique(df_transito$sinalizacao)
+unique(df_transito$ponto_controle)
+unique(df_transito$mao_direcao)
+unique(df_transito$divisao_via1)
+unique(df_transito$divisao_via2)
+head(unique(df_transito$bairro))
+
+
+```
+
+### 3.5 Informações Resumidas
+
+<br>Após ter realizado a limpeza de todos os textos das variáveis agora é possível começar a análise dos dados para buscar informações que possam agregar valor.<br>
+Como exemplo, uma tabela com informações que existem acidentes mesmo com via de baixa velocidade como exemplo 30 km/h.
+<br>
+
+```{r RESUMO, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#library(data.table)
+#Professor, não consegui fazer o comando rodar no R Markdown mesmo instalando e carregando o pacote data.table, mas funciona no Scrip do RStudio.
+#datatable(head(df_transito), options = list(scroller = TRUE,scrollX = TRUE, scrolly = TRUE))
+
+#Resumo das 06 primeiras linas do dataset
+head(select(df_transito, DATA, natureza_acidente,bairro,situacao,velocidade_max_via))
+```
+
+
+## 4.Análise Exploratória dos dados
+
+### 4.1 Análise
+
+Nesta seção será abordada técnicas data science buscando alguma informação que possa evitar acidentes de trânsito:
+
+```{r grafico, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#criei este data frame
+dt_locomocao <- df_transito[,18:26]
+
+#Para executar os próximos dois comando serão utilizados os pacotes:
+library(tidyr)
+library(ggplot2)
+
+#gather - comando para agrugar as colunas
+dt_locomocao <- dt_locomocao %>%
+  gather(key = "transporte", 
+         value = "total")
+
+
+dt_locomocao <- dt_locomocao[complete.cases(dt_locomocao),]
+
+#ggplot - Comando para gerar o gráfico.
+ggplot(dt_locomocao, aes(x=transporte, y=total, fill=transporte)) + 
+  geom_bar(stat="identity") +
+  geom_text(aes(label=total), vjust=1.5, colour="white", size=3.5)
+```
+
+<center>caso o R Markdown não gere o gráfico autor exportou na parte do Script:</center><br>
+
+![](C:\projeto_ufrpe\grafico_barra.png)
+
+<br> O interessante é que muitas pessoas inclusive o autor normalmente pensa que a maior quantidade de acidentes em transito envolvem motos, mas com base nesta evidência foi possível ver que não é verdade
+
+
+### 4.2 Bairros que tirevam mais acidentes com automóveis (auto) em Recife ano 2019
+
+Vou preparar a massa de dados para descobrir quais são os bairros que mais tem acidentes de transito em Recife<br>
+
+```{r Grafico_Pizza, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#Bairros que tirevam mais acidentes de Carro em Recife ano 2019
+
+Grafico_pizza <- df_transito %>%
+  group_by(bairro) %>%
+  filter(auto > 2) %>%
+  summarise(
+    acidende_Carro = sum(auto),
+    Bairro = bairro
+  ) 
+
+Grafico_pizza <- Grafico_pizza[,1:2]
+
+#Removendo duplicidade:
+index <-  which(duplicated(Grafico_pizza))
+Grafico_pizza<-Grafico_pizza[-index, ]
+
+which(duplicated(Grafico_pizza))
+
+Grafico_pizza <- filter(Grafico_pizza, acidende_Carro>60)
+
+View(Grafico_pizza)
+
+x <- Grafico_pizza$acidende_Carro
+labels <- Grafico_pizza$bairro
+ pct <- round(x/sum(x)*100)
+ lbls <- paste(labels, pct)
+ lbls <- paste(lbls,"%",sep="")
+ pie(x,labels=lbls, main="Bairros que tirevam mais acidentes com automóveis",col=rainbow(6))
+
+
+ #Os seis bairros que tiveram mais acidentes
+ head(Grafico_pizza)
+ 
+```
+
+### 4.3 Semáforos no bairro de Boa Viagem
+
+<br>Realizar uma análise do estado em que se encontra os semáforos no bairro que teve maior ocorrência de acidentes de trânsito.<br>
+
+```{r semaforo, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#Situação dos semáforos no bairro de Boa Viagem 
+        
+boa_viagem <- df_transito%>%
+  filter(bairro == "BOA VIAGEM")%>%
+  select(bairro, situacao_semaforo)
+
+barplot((table(boa_viagem$situacao_semaforo)),
+        main = "Situação dos Semáforos no bairro Boa Viagem",
+        ylab = "Estado do semafóro",
+        xlab = "total de Acidentes",
+        col = c("yellow","purple","green","red","blue"))
+
+
+```
+
+### 4.4 Provável ação preventiva para evitar novos acidentes
+
+Instalar mais alguns semáforos nas ruas ou avenidas que tem mais de 30 registros de acidentes.<br>
+
+```{r novo_semaforo, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+
+#Estou criando este data frame para poder filtrar as principais ruas/avenidas com a situação de cada semáforo
+logradouro <- df_transito%>%
+  filter(bairro == "BOA VIAGEM", situacao_semaforo == "NÃO existe")%>%
+  select(endereco, numero)
+
+#exemplo de total de acidentes em 6 bairros:
+head(table(logradouro$endereco))
+
+#Separando as ruas com mais de 30 acidentes
+
+rua <- c("a-AV BOA VIAGEM","b-AV CONSELHEIRO AGUIAR","c-AV ENGENHEIRO DOMINGOS FERREIRA",
+         "d-RUA RIBEIRO DE BRITO","e-RUA VISCONDE DE JEQUITINHONHA")
+
+n1 <- sum(str_count(logradouro$endereco,"AV BOA VIAGEM"), na.rm=TRUE)
+n2 <- sum(str_count(logradouro$endereco,"AV CONSELHEIRO AGUIAR"), na.rm=TRUE)
+n3 <- sum(str_count(logradouro$endereco,"AV ENGENHEIRO DOMINGOS FERREIRA"), na.rm=TRUE)
+n4 <- sum(str_count(logradouro$endereco,"RUA RIBEIRO DE BRITO"), na.rm=TRUE)
+n5 <- sum(str_count(logradouro$endereco,"RUA VISCONDE DE JEQUITINHONHA"), na.rm=TRUE)
+
+total <- c(n1,n2, n3, n4, n5)
+
+vetor <- c("a","b","c","d","e")
+
+barplot(total,
+        main = "Ruas ou Avenidas com mais de 30 acidentes em Boa Viagem 2019",
+        ylab = "Rua ou Avenida",
+        xlab = "Total Acidentes",
+        names.arg = vetor, 
+        col = rainbow(5),
+        xjust = 0.5 ,
+        horiz = T
+        )
+legend("topright",
+       pch = c(15,15,15,15,15),
+       col = rainbow(5), 
+       text.width = 30,
+      legend=rua)
+
+
+```
+
+A Provável ação preventiva pode ser tomada, da seguinte forma, instalar 05 semáforos nos cinco principais logradouros no bairro de Boa Viagem em Recife.<br>
+Pois como evidência no total de acidentes somente nestas cinco vias são: `r sum(total)`. 
+<br>
+
+```{r acao, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#Tabela das vias com sua quantidade de acidentes:
+tabela <- data.frame(localizacao <- rua, quantidade <- total)
+head(tabela)
+
+#Chegando a este total de acidentes que pode ser evitado:
+sum(total)
+
+```
+
+
+## 5.Conclusão
+
+5.1 Foi evidenciado com base nos dados que cinco semáforos no bairro de Boa viagem podem evitar vários acidentes.
+<br><br><br>
+5.2 Foi abordada uma análise investigativa pra entender as prováveis causas de acidentes nos principais bairros e depois foi realizado um levantamento pra saber o bairro que mais têm ocorrências e foi constatado que no bairro de Boa Viagem, no qual existem algumas vias que não tem semáforos registrados e assim pode chegar na conclusão de um tratamento de uma ação preventiva para evitar mais vítimas de acidentes.
+<br><br><br>
+5.3 O insights que levou o autor a estas intuições foi buscar entender como evitar que um acidente possa acontecer, e como normalmente a maioria dos condutores param os carros por meio de semáforos e na massa de dados foi possível ver que existe uma grande quantidade de acidentes em lugares que não têm semáforos, logo foi feito uma investigação para saber quais são as vias que mais têm acidentes e como pode evitar. Chegando a uma provável solução de cinco semáforos nestas vias aprensentadas na seção 4.
+<br><br><br>
+5.4 Potênciais Clientes
+<br><br><br>
+As implicações para aderir um potêncial cliente público ou privado pode ser baseado no valor que o governo pode pagar a cada idenização no DPVAT onde os valores das indenizações podem chegar até R$ 13.500,00 por cada acidente dependendo da análise médica.
+<br><br><br>
+link: [Tabela de Idenização no DPVAT](http://www.susep.gov.br/setores-susep/cgpro/dpvat)
+
+A Provável ação preventiva que é instalar semáforos para evitar ocorrências de idenizações por meio do DPVAT e ainda salvar vidas.
+<br><br><br>
+
+```{r cliente, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+#Nestas principais vias que ocorreu acidentes:
+head(rua)
+
+#com o total de acidentes:
+sum(total)
+
+```
+
+
+<br> Ilustração das idenizações do DPVAT disponível por meio do jornal Gazeta do Povo<br>
+
+![Gazeta do Povo: Tabela do DPVAT](https://media.gazetadopovo.com.br/2009/05/9d682633db7acba6f2dc1f63e069b204-gpLarge.jpg)
+
+<br>
+5.5 A limitação desta análise é que não foi realizado a mesma para todos os bairros da cidade de Recife que também acontece acidentes de trânsito.
+
+
+## 6.Vídeo
+
+Segue o link do vídeo que fiz para apresentar o projeto. [Vídeo da apresentação](https://www.youtube.com/watch?v=pZvR-ZgDJFg)
+<br>
+Caso o link não funcione. Pode copiar o link aqui:  https://www.youtube.com/watch?v=pZvR-ZgDJFg
+<br>
+
+
+
+<!-- Titulo 1: # header 1 -->
+<!-- Titulo 2: ## header 2 -->
+<!-- Titulo 3: ### header 3 -->
+<!-- Titulo 4: #### header 4 -->
+<!-- seções com Abas: {.tabset} -->
+<!-- Texto Negrito: **bold** -->
+<!-- Texto Itálico: *italics* -->
+<!-- Texto Código: `code` -->
+<!-- Incluir um link: [Rural](www.ufrpe.br) -->
+
