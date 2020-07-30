@@ -717,6 +717,31 @@ summary(df_transito$vitimas, na.rm=TRUE)
 summary(df_transito$vitimasfatais, na.rm=TRUE)
 ```
 
+### 4.6.2 Segue a situação dos semáforos na cidade de Recife com relação a quantidade de acidentes ocasionado por automóvel.
+
+```{r boxplot_semaforo1,  echo=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+
+library(dplyr)
+library(tidyr)
+
+df_box <- df_transito%>%select(auto,situacao_semaforo)
+
+df_box <- df_box %>% drop_na()
+
+```
+
+
+```{r boxplot_semaforo2, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE}
+
+boxplot(auto ~ situacao_semaforo , data=df_box,
+        xlab = "situacao_semaforo",
+        ylab = "auto", 
+        main = "Situação dos semáforos em Recife referente a acidentes com Automóveis", 
+        col = rainbow(5),
+        outline=FALSE)
+```
+
+
 ## 4.7 Amostra
 
 ### 4.7.1 Cálculo de uma Amostra
@@ -1093,6 +1118,33 @@ kable(df_barra, caption = "Total de acidentes de cada transporte")
 <p style="text-align: justify;">
 O interessante é que muitas pessoas inclusive o autor normalmente pensa que a maior quantidade de acidentes em transito envolvem motos, mas com base nesta evidência foi possível ver que não é verdade
 </p>
+
+### 6.1.2 Dispersão entre os dois maiores tipos de acidentes de trânsito.
+
+```{r codgo_dispercao, echo=FALSE}
+df_disp <- df_transito%>%select(natureza_acidente,
+                                auto,moto)
+
+df_disp <- df_disp %>% drop_na()
+```
+
+
+```{r dispersao, echo=TRUE}
+
+plot(df_disp$moto~df_disp$auto, 
+     main = "Dispersão dos acidentes entre \n Automóveis e Motos",
+     col = c("blue","green","red"),
+     pch=18,
+     cex=2,
+     ylab = "Acidentes com Motos",
+     xlab = "Acidentes com Automóveis")
+legend("topright", 
+       pch = 18,
+       col = c("blue","green","red"), 
+       legend = unique(df_disp$natureza_acidente))
+
+```
+
 
 
 ## 6.2 Bairros com mais acidentes
