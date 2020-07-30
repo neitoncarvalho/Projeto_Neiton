@@ -1464,11 +1464,11 @@ O desenvolvimento desste projeto foi bastante importante o conhecimento referent
 
 ### 8.1.1 Link direto para o YouTube
 
-Segue o link do vídeo que fiz para apresentar o projeto. [Vídeo da apresentação](https://www.youtube.com/watch?v=ZfAJNoU6lOE)
+Segue o link do vídeo que fiz para apresentar o projeto. [Vídeo da apresentação](https://www.youtube.com/watch?v=PaLfACIAbbs)
 
 ### 8.1.2 Link para cópiar e colar na URL para chegar no YouTube
 
-Caso o link não funcione. Pode copiar o link aqui:  https://www.youtube.com/watch?v=ZfAJNoU6lOE
+Caso o link não funcione. Pode copiar o link aqui:  https://www.youtube.com/watch?v=PaLfACIAbbs
 <br>
 
 ## 8.2 Projeto no GitHub
